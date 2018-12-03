@@ -1,0 +1,60 @@
+{% extends "pacientes/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content">
+        <button type="button" class="btn btn-primary" data-toggle='modal' data-target='#popupwindow'>agregar</button>
+        <table class = "table table-striped ">
+            <thead class="thead-dark">
+                <tr>
+                    <th>RUT</th>
+                    <th>Nombres</th>
+                    <th>Email</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for paciente in objects %}
+                <tr>
+                    <td scope="row">{{ paciente.rut }}</td>
+                    <td>{{ paciente.appat }} {{ paciente.apmat }} {{ paciente.nombres }}</td>
+                    <td>{{ paciente.email }}</td>
+                    <td>{{ paciente.fecha_nacimiento }}</td>
+                    <td>
+                        <a href="{% url 'pacientes:pacientes-actualizar' paciente.id %}" class="btn btn-outline-warning btn-sm">Editar</a>
+                        <a href="{% url 'agenda:agenda-crear' %}" class="btn btn-outline-warning btn-sm">Agendar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+                    
+                 
+            </tbody>
+        </table>
+
+        <div class="modal fade" id='popupwindow' >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <form method="POST">
+                            {% csrf_token %}
+                            <fieldset class="form-group">
+                                <legend class="border-bottom mb-4"><h3>Crear Paciente</h3></legend>
+                                {% crispy form %}
+                            </fieldset>
+                        {% comment %}  <div class="form-group">
+                                <button class="btn btn-outline-info" type="submit">Ingresar</button>
+                                <a class="btn btn-outline-secondary" href="{% url 'pacientes:pacientes-listar' %}">Cancel</a>
+                            </div> {% endcomment %}
+                        </form>
+                    
+                    </div>
+                    <div class="modal-footerr"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
