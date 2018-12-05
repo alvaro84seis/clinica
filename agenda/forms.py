@@ -14,7 +14,7 @@ class AgendaCrearForm(forms.ModelForm):
         now = datetime.datetime.now()
         model = Agenda
         #fields = ['rut','nombres','apellido_paterno','apellido_materno','sexo','fecha_nacimiento']
-        exclude = ['agenda_creacion']
+        exclude = ['agenda_creacion','agenda_paciente','estado_agenda']
         widgets = {
             'agenda_fecha': SelectDateWidget(attrs = {
                 'placeholder': 'Ingrese fecha agenda',

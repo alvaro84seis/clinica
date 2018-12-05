@@ -7,6 +7,12 @@ class Hora(models.Model):
     def __str__(self):
         formatedHour = self.hora.strftime("%H:%M")
         return formatedHour
+
+class EstadoAgenda(models.Model):
+    estado_agenda = models.CharField(max_length=70, blank=False)
+    def __str__(self):
+        return self.estado_agenda
+
 class Agenda(models.Model):
     nombre = models.CharField(max_length=70, blank=False)
     agenda_fecha = models.DateField(blank=False)
@@ -14,9 +20,10 @@ class Agenda(models.Model):
     agenda_creacion = models.DateField(auto_now=True)
     agenda_comentario = models.CharField(max_length=200, blank=False)
     agenda_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    estado_agenda = models.ForeignKey(EstadoAgenda, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.agenda_fecha+' '+self.hora_agenda
+        return self.nombre
     
     def get_absolute_url(self):
         return reverse('pacientes:pacientes-listar')

@@ -12,6 +12,7 @@ from django.views.generic import (
 from .models import Paciente
 from .forms import PacienteCrearForm, PacienteActualizarForm
 from django.contrib import messages
+from django.core.paginator import Paginator
 # Create your views here.
 @login_required
 def home_view(request):
@@ -30,7 +31,13 @@ class ListAndCreate(SuccessMessageMixin,LoginRequiredMixin,CreateView):
     success_message = 'Paciente Creado con Exito'
     def get_context_data(self, **kwargs):
         context = super(ListAndCreate, self).get_context_data(**kwargs)
-        context["objects"] = self.model.objects.all()
+        lista_pacientes = self.model.objects.get_queryset().order_by('id')
+        paginator = Paginator(lista_pacientes, 2)
+        selfcle=self.kwargs.get('page')
+        print(selfcle)
+        pacientes_obj = paginator.get_page(page)
+        
+        context["objects"] = pacientes_obj
         return context
 
 class PacienteListView(LoginRequiredMixin,ListView):
