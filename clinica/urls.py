@@ -25,6 +25,7 @@ urlpatterns = [
     path('', pacientes_views.home_view, name='home'),
     path('pacientes/', include('pacientes.urls')),
     path('agenda/', include('agenda.urls')),
+
     path('login/', auth_views.LoginView.as_view(template_name='usuarios/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='usuarios/logout.html'), name='logout'),
 

@@ -10,9 +10,15 @@
     <!-- Bootstrap CSS -->
   
     
-    {% load bootstrap4 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript jquery='full' %}
+    <script src="{% static 'pacientes/js/jquery-3.3.1.js' %}"></script>
+    <script src="{% static 'pacientes/js/popper.js' %}"></script>
+    <script src="{% static 'pacientes/js/bootstrap.js' %}"></script>
+    <script src="{% static 'pacientes/js/select2.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'pacientes/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'pacientes/css/select2.min.css' %}">
+    {% block cabecera_extra %}
+    
+    {% endblock cabecera_extra %}
     <link rel="stylesheet" type="text/css" href="{% static 'pacientes/main.css' %}">
    
 
@@ -45,11 +51,11 @@
 					<a class="dropdown-item" href="{% url 'pacientes:pacientes-crear' %}">Ingresar</a>
 					<a class="dropdown-item" href="{% url 'pacientes:pacientes-listar' %}">Listar</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="#">Something else here</a>
+					<a class="dropdown-item" href="#">otra</a>
 					</div>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link disabled" href="#">Disabled</a>
+					<a class="nav-link" href="{% url 'agenda:agenda-calendario' %}">Calendario</a>
 				</li>
 				</ul>
 				
@@ -95,9 +101,11 @@
         </div> {% endcomment %}
       </div>
     </main>
+ 
     {% block extrajs %}
     
     {% endblock extrajs %}
+
     <script>
       
     </script>

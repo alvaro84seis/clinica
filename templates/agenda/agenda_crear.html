@@ -5,13 +5,27 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Agendar</legend>
-                {{ form | crispy }}
+                <legend class="border-bottom mb-4">Agendar al paciente: {{ paciente.nombres }} {{paciente.apellido_paterno }} {{ paciente.apellido_materno }} </legend>
+                {% crispy form %}
             </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Ingresar</button>
-                <a class="btn btn-outline-secondary" href="{% url 'pacientes:pacientes-listar' %}">Cancel</a>
-            </div>
+            
         </form>
     </div>
 {% endblock content %}
+{% block extrajs %}
+ <script>
+$( document ).ready(function(){
+    var f = new Date();
+    $("#id_nombre").val("{{ paciente.nombres }} {{paciente.apellido_paterno }} {{ paciente.apellido_materno }}");
+    $("#id_hora_agenda").change(function(){
+        $("#id_nombre").val("{{ paciente.nombres }} {{paciente.apellido_paterno }} {{ paciente.apellido_materno }}");
+
+    });
+    $("#id_agenda_fecha_day").val(f.getDate());
+    $("#id_agenda_fecha_month").val((f.getMonth() +1));
+    $("#id_agenda_fecha_year").val(f.getFullYear());
+    
+});
+      
+</script>
+{% endblock extrajs %}

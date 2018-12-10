@@ -1,0 +1,123 @@
+{% extends "pacientes/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block cabecera_extra %}
+    <link rel="stylesheet" href="{% static 'agenda/css/fullcalendar.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="{% static 'agenda/js/moment.min.js' %}"></script>
+    <script src="{% static 'agenda/js/fullcalendar.js' %}"></script>
+    <script src="{% static 'agenda/locale/es.js' %}"></script>
+{% endblock cabecera_extra %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div id="calendarioweb"></div>
+            <div class="col"></div>
+        </div>
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Crear Agenda <span id="fecha_span"></span> </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    {% crispy form %}
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModalEditar">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar Agenda <span id="fecha_span"></span> </h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    {% crispy form %}
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
+{% block extrajs %}
+<script>
+    console.log({{ json|safe }});
+    $( document ).ready(function(){
+        $('#id_agenda_paciente').prop('style','width:100%;');
+        $('.select2-selection--single').prop('style','height:38px');
+        $('#id_agenda_paciente').select2({
+             width: 'resolve'
+        });
+        $('#calendarioweb').fullCalendar({
+            height: 700,
+            
+            themeSystem: 'bootstrap4',
+            header:{
+                left:   'title',
+                center: 'month,basicWeek,basicDay agendaWeek, agendaDay',
+                right:  'today prev,next'
+            },
+            businessHours: {
+            // days of week. an array of zero-based day of week integers (0=Sunday)
+            dow: [ 1, 2, 3, 4,5,6 ], // Monday - Thursday
+
+            start: '9:00', // a start time (10am in this example)
+            end: '19:00', // an end time (6pm in this example)
+            },
+            events:{{ json|safe }},
+            dayClick: function(date, jsEvent, view) {
+
+                //alert('Clicked on: ' + date.format());
+
+                //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+
+                //alert('Current view: ' + view.name);
+              
+                $("#id_agenda_fecha").val(date.format())
+                $("#fecha_span").html(date.format());
+                $("#myModal").modal();           
+                // change the day's background color just for fun
+                //$(this).css('background-color', 'red');
+            },
+            eventClick: function(calEvent, jsEvent, view) {
+
+                alert('Event: ' + calEvent.title);
+                alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+                alert('View: ' + view.name);
+
+                // change the border color just for fun
+                $(this).css('border-color', 'red');
+
+            }
+
+  
+            
+        });
+    });
+</script>
+{% endblock extrajs %}

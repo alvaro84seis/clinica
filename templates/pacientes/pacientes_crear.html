@@ -1,17 +1,14 @@
-{% extends "pacientes/base.html" %}
+
 {% load crispy_forms_tags %}
-{% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Crear Paciente</legend>
-                {% crispy form %}
-            </fieldset>
-           {% comment %}  <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Ingresar</button>
-                <a class="btn btn-outline-secondary" href="{% url 'pacientes:pacientes-listar' %}">Cancel</a>
-            </div> {% endcomment %}
-        </form>
+
+     <div class="modal-header">
+        <h4 class="modal-title">Crear Paciente nuevo</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-{% endblock content %}
+    <div class="modal-body">
+        {% crispy form %}
+    </div>
+    
+

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -12,7 +12,9 @@ from django.views.generic import (
 from .models import Paciente
 from .forms import PacienteCrearForm, PacienteActualizarForm
 from django.contrib import messages
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 # Create your views here.
 @login_required
 def home_view(request):
@@ -32,13 +34,61 @@ class ListAndCreate(SuccessMessageMixin,LoginRequiredMixin,CreateView):
     def get_context_data(self, **kwargs):
         context = super(ListAndCreate, self).get_context_data(**kwargs)
         lista_pacientes = self.model.objects.get_queryset().order_by('id')
-        paginator = Paginator(lista_pacientes, 2)
-        selfcle=self.kwargs.get('page')
-        print(selfcle)
-        pacientes_obj = paginator.get_page(page)
-        
-        context["objects"] = pacientes_obj
+        context["objects"] = lista_pacientes
         return context
+
+
+# @login_required
+# def lista_crear(request):
+#     if request.method == 'POST':
+#         form = PacienteCrearForm(request.POST or None)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, f'Paciente  creado!! ')
+#             return redirect('pacientes:pacientes-listar')
+#     else:
+#         paciente_list = Paciente.objects.all()
+#         paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
+#         page = request.GET.get('page')
+#         pacientes = paginator.get_page(page)
+#         form = PacienteCrearForm()
+#     return render(request,'pacientes/pacientes_listar.html',{'form':form,'pacientes':pacientes})
+
+@login_required
+def listar_pacientes(request):
+    paciente_list = Paciente.objects.all()
+    paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
+    page = request.GET.get('page')
+    pacientes = paginator.get_page(page)
+    return render(request,'pacientes/pacientes_listar.html',{'pacientes':pacientes})
+
+def paciente_crear(request):
+    data = dict()
+
+    if request.method == 'POST':
+        form = PacienteCrearForm(request.POST)
+        if form.is_valid():
+            form.save()
+            #messages.success(request, f'Paciente  creado!! ')
+            data['form_is_valid'] = True
+            paciente_list = Paciente.objects.all()
+            paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
+            page = request.GET.get('page')
+            pacientes = paginator.get_page(page)
+            data['html_pacientes_lista'] = render_to_string('pacientes/pacientes_parcial_listar.html', {
+                'pacientes': pacientes
+            })
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = PacienteCrearForm()
+
+    context = {'form': form}
+    data['html_form'] = render_to_string('pacientes/pacientes_crear.html',
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
 
 class PacienteListView(LoginRequiredMixin,ListView):
     model = Paciente

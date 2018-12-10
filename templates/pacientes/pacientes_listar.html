@@ -3,60 +3,57 @@
 {% load static %}
 {% block content %}
     <div class="content">
-        <button type="button" class="btn btn-primary" data-toggle='modal' data-target='#popupwindow'>agregar</button>
-        <table class = "table table-striped ">
-            <thead class="thead-dark">
-                <tr>
-                    <th>RUT</th>
-                    <th>Nombres</th>
-                    <th>Email</th>
-                    <th>Fecha Nacimiento</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for paciente in objects %}
-                <tr>
-                    <td scope="row">{{ paciente.rut }}</td>
-                    <td>{{ paciente.appat }} {{ paciente.apmat }} {{ paciente.nombres }}</td>
-                    <td>{{ paciente.email }}</td>
-                    <td>{{ paciente.fecha_nacimiento }}</td>
-                    <td>
-                        <a href="{% url 'pacientes:pacientes-actualizar' paciente.id %}" ><img src="{% static '/agenda/001-resume.png' %}" alt="Editar" width='31' height='31'></a>
-                        <a href="{% url 'agenda:agenda-crear' paciente.id %}" ><img src="{% static '/agenda/003-calendar.png' %}" alt="Editar" width='35' height='35'></a>
-                    </td>
-                </tr>
-            {% endfor %}
-                    
-                 
-            </tbody>
-        </table>
-
-        <div class="modal fade" id='popupwindow' >
+        <button type="button" class="btn btn-primary js-crear-paciente" ><b>&plus;</b></button>
+        <div id="contenido_tabla">
+            {% include 'pacientes/pacientes_parcial_listar.html' %}
+        </div>
+        <div class="modal fade" id='modal-paciente' >
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        
-                        <form method="POST">
-                            {% csrf_token %}
-                            <fieldset class="form-group">
-                                <legend class="border-bottom mb-4"><h3>Crear Paciente</h3></legend>
-                                {% crispy form %}
-                            </fieldset>
-                        {% comment %}  <div class="form-group">
-                                <button class="btn btn-outline-info" type="submit">Ingresar</button>
-                                <a class="btn btn-outline-secondary" href="{% url 'pacientes:pacientes-listar' %}">Cancel</a>
-                            </div> {% endcomment %}
-                        </form>
-                    
-                    </div>
-                    <div class="modal-footerr"></div>
+                   
                 </div>
             </div>
         </div>
-      
     </div>
 {% endblock content %}
+{% block extrajs %}
+<script>
+    $(function () {
+
+    $(".js-crear-paciente").click(function () {
+        $.ajax({
+        url: 'new/',
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+            $("#modal-paciente").modal("show");
+        },
+        success: function (data) {
+            $("#modal-paciente .modal-content").html(data.html_form);
+        }
+        });
+    });
+
+    $("#modal-paciente").on("submit", "#id_crear_form", function () {
+        var form = $(this);
+        $.ajax({
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: form.attr("method"),
+        dataType: 'json',
+        success: function (data) {
+            if (data.form_is_valid) {
+                $("#contenido_tabla").html(data.html_pacientes_lista);
+                $("#modal-paciente").modal("hide");
+            }
+            else {
+                $("#modal-paciente .modal-content").html(data.html_form);
+            }
+        }
+        });
+        return false;
+    });
+
+    });
+</script>
+{% endblock extrajs %}
