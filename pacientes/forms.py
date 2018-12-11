@@ -1,5 +1,6 @@
 from django import forms
 from .models import Paciente
+from django.urls import reverse
 from django.contrib.admin import widgets 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Div, HTML
@@ -79,8 +80,6 @@ class PacienteActualizarForm(forms.ModelForm):
         super(PacienteActualizarForm, self).__init__(*args, **kwargs)
  
         self.helper = FormHelper()
-        self.helper.form_id = 'id_pacientes_form'
-        self.helper.form_method = 'POST'
         self.helper.form_tag = True
         self.helper.layout = Layout(
             Div('rut','nombres'),
@@ -102,7 +101,7 @@ class PacienteActualizarForm(forms.ModelForm):
             Div('direccion', 'motivo_consulta'),
             Div(
                 Submit('actualizar', 'Actualizar', css_class="btn btn-outline-info"),
-                HTML("<a class='btn btn-outline-secondary' href='{% url \'pacientes:pacientes-listar\' %}'>Cancelar</a>")
+                HTML("<button class='btn btn-outline-secondary' data-dismiss='modal'>Cancelar</button>")
             )
          
         )

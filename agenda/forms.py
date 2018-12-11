@@ -34,8 +34,6 @@ class AgendaCrearForm(forms.ModelForm):
         super(AgendaCrearForm, self).__init__(*args, **kwargs)
  
         self.helper = FormHelper()
-        self.helper.form_id = 'id_crear_form'
-        self.helper.form_method = 'POST'
         self.helper.form_tag = True
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
@@ -44,7 +42,7 @@ class AgendaCrearForm(forms.ModelForm):
             Div('nombre','agenda_fecha','agenda_hora','agenda_comentario','agenda_tipo'),
             Div(
                 Submit('ingresar', 'Ingresar', css_class="btn btn-outline-info"),
-                HTML("<a class='btn btn-outline-secondary' href='{% url \'pacientes:pacientes-listar\' %}'>Cancelar</a>")
+                HTML("<button class='btn btn-outline-secondary' data-dismiss='modal'>Cancelar</button>")
             )
          
         )

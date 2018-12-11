@@ -1,31 +1,27 @@
-{% extends "pacientes/base.html" %}
+
 {% load crispy_forms_tags %}
-{% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Agendar al paciente: {{ paciente.nombres }} {{paciente.apellido_paterno }} {{ paciente.apellido_materno }} </legend>
-                {% crispy form %}
-            </fieldset>
-            
-        </form>
+
+     <div class="modal-header">
+        <h4 class="modal-title">Agendar al paciente: {{ paciente.nombres }} {{paciente.apellido_paterno }} {{ paciente.apellido_materno }}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-{% endblock content %}
-{% block extrajs %}
- <script>
-$( document ).ready(function(){
-    var f = new Date();
+    <div class="modal-body">
+    <form action="{% url 'agenda:agenda-crear' paciente.pk %}" id='agenda_crear_form' method='POST'>
+           
+        {% crispy form %}
+    </form>
+    </div>
+
+    <script>
+     var f = new Date();
     $("#id_nombre").val("{{ paciente.nombres }} {{paciente.apellido_paterno }} {{ paciente.apellido_materno }}");
-    $("#id_hora_agenda").change(function(){
+    $("#id_agenda_hora").change(function(){
         $("#id_nombre").val("{{ paciente.nombres }} {{paciente.apellido_paterno }} {{ paciente.apellido_materno }}");
 
     });
     $("#id_agenda_fecha_day").val(f.getDate());
     $("#id_agenda_fecha_month").val((f.getMonth() +1));
     $("#id_agenda_fecha_year").val(f.getFullYear());
-    
-});
-      
-</script>
-{% endblock extrajs %}
+    </script>

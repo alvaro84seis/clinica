@@ -19,6 +19,8 @@
 {% block extrajs %}
 <script>
     $(function () {
+   
+
 
     $(".js-crear-paciente").click(function () {
         $.ajax({
@@ -34,8 +36,92 @@
         });
     });
 
+    crear_agenda = function (kk) {
+        var btn=$(kk);
+        $.ajax({
+        url: btn.attr('data-url'),
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+            $("#modal-paciente").modal("show");
+        },
+        success: function (data) {
+            $("#modal-paciente .modal-content").html(data.html_form);
+        }
+        });
+    };
+    actualizar = function(bb){
+        var btn = $(bb);
+        $.ajax({
+        url: btn.attr("data-url"),
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+            $("#modal-paciente").modal("show");
+        },
+        success: function (data) {
+            $("#modal-paciente .modal-content").html(data.html_form);
+        }
+        });
+    };
+
+    borrar_paciente = function (kk) {
+        var btn=$(kk);
+        $.ajax({
+        url: btn.attr("data-url"),
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+            $("#modal-paciente").modal("show");
+        },
+        success: function (data) {
+            $("#modal-paciente .modal-content").html(data.html_form);
+        }
+        });
+    };
+
     $("#modal-paciente").on("submit", "#id_crear_form", function () {
         var form = $(this);
+        $.ajax({
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: form.attr("method"),
+        dataType: 'json',
+        success: function (data) {
+            if (data.form_is_valid) {
+                $("#contenido_tabla").html(data.html_pacientes_lista);
+                $("#modal-paciente").modal("hide");
+            }
+            else {
+                $("#modal-paciente .modal-content").html(data.html_form);
+            }
+        }
+        });
+        return false;
+    });
+    $("#modal-paciente").on("submit", ".js-paciente-delete-form", function () {
+        var form = $(this);
+        //console.log(form.attr("action"));
+        $.ajax({
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: form.attr("method"),
+        dataType: 'json',
+        success: function (data) {
+            if (data.form_is_valid) {
+                $("#contenido_tabla").html(data.html_pacientes_lista);
+                $("#modal-paciente").modal("hide");
+            }
+            else {
+                $("#modal-paciente .modal-content").html(data.html_form);
+            }
+        }
+        });
+        return false;
+    });
+    $("#modal-paciente").on("submit", "#agenda_crear_form", function () {
+        var form = $(this);
+        //console.log(form.attr("action"));
         $.ajax({
         url: form.attr("action"),
         data: form.serialize(),

@@ -1,19 +1,16 @@
-{% extends "pacientes/base.html" %}
-{% load crispy_forms_tags %}
-{% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Editar Paciente</legend>
-                {% crispy form %}
-            </fieldset>
-            {% comment %} <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Ingresar</button>
-            </div> {% endcomment %}
-        </form>
-    </div>
-{% endblock content %}
-{% block extrajs %}
 
-{% endblock extrajs %}
+{% load crispy_forms_tags %}
+
+     <div class="modal-header">
+        <h4 class="modal-title">Editar Paciente</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+    <form method ='POST' action="{% url 'pacientes:pacientes-actualizar' form.instance.pk %}" id='id_actualizar_form' class='id_actualizar_form'>
+           
+        {% crispy form %}
+    </form>
+    </div>
+    

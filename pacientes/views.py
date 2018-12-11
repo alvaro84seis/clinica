@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -62,6 +62,7 @@ def listar_pacientes(request):
     pacientes = paginator.get_page(page)
     return render(request,'pacientes/pacientes_listar.html',{'pacientes':pacientes})
 
+@login_required
 def paciente_crear(request):
     data = dict()
 
@@ -88,6 +89,58 @@ def paciente_crear(request):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+@login_required
+def paciente_actualizar(request,pk):
+    data = dict()
+    paciente = get_object_or_404(Paciente,pk=pk)
+    if request.method == 'POST':
+        form = PacienteActualizarForm(request.POST,instance=paciente)
+        if form.is_valid():
+            form.save()
+            #messages.success(request, f'Paciente  creado!! ')
+            data['form_is_valid'] = True
+            paciente_list = Paciente.objects.all()
+            paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
+            page = request.GET.get('page')
+            pacientes = paginator.get_page(page)
+            data['html_pacientes_lista'] = render_to_string('pacientes/pacientes_parcial_listar.html', {
+                'pacientes': pacientes
+            })
+        else:
+            data['form_is_valid'] = False
+    else:
+
+        form = PacienteActualizarForm(instance=paciente)
+
+    context = {'form': form}
+    data['html_form'] = render_to_string('pacientes/pacientes_update.html',
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+@login_required
+def paciente_delete(request, pk):
+    paciente = get_object_or_404(Paciente, pk=pk)
+    data = dict()
+    if request.method == 'POST':
+        paciente.delete()
+        data['form_is_valid'] = True
+        paciente_list = Paciente.objects.all()
+        paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
+        page = request.GET.get('page')
+        pacientes = paginator.get_page(page)
+        data['html_pacientes_lista'] = render_to_string('pacientes/pacientes_parcial_listar.html', {
+            'pacientes': pacientes
+        })
+    else:
+        context = {'paciente': paciente}
+        data['html_form'] = render_to_string('pacientes/pacientes_delete.html',
+            context,
+            request=request,
+        )
     return JsonResponse(data)
 
 class PacienteListView(LoginRequiredMixin,ListView):
