@@ -9,7 +9,8 @@ from .views import (
     listar_pacientes,
     paciente_crear,
     paciente_actualizar,
-    paciente_delete
+    paciente_delete,
+    paciente_buscar
 )
 app_name= 'pacientes'
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     #path('new/', PacienteCreateView.as_view(), name='pacientes-crear'),
     path('listar/new/', paciente_crear, name='pacientes-crear'),
     path('listar/', listar_pacientes, name='pacientes-listar'),
+    path('listar/buscar/', paciente_buscar, name='pacientes-buscar'),
     #path('listar/', ListAndCreate.as_view(), name='pacientes-listar'),
     #path('listar/<int:pk>/update', PacienteUpdateView.as_view(), name='pacientes-actualizar'),
     path('listar/<int:pk>/update', paciente_actualizar, name='pacientes-actualizar'),

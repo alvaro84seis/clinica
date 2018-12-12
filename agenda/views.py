@@ -94,12 +94,14 @@ def agenda_crear(request,pk):
             print(form.cleaned_data)
             form.save()
             data['form_is_valid'] = True
-            paciente_list = Paciente.objects.all()
+            paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
             paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
             page = request.GET.get('page')
             pacientes = paginator.get_page(page)
+            
             data['html_pacientes_lista'] = render_to_string('pacientes/pacientes_parcial_listar.html', {
-                'pacientes': pacientes
+                'pacientes': pacientes,
+                'message': {'message': f'Agenda para { paciente2.nombres } { paciente2.apellido_paterno } { paciente2.apellido_materno } Creada con EXITO!! ', 'tags': 'success'}
             })
         else:
             data['form_is_valid'] = False

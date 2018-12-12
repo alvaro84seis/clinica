@@ -15,6 +15,7 @@ from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.db.models import Q
 # Create your views here.
 @login_required
 def home_view(request):
@@ -56,7 +57,7 @@ class ListAndCreate(SuccessMessageMixin,LoginRequiredMixin,CreateView):
 
 @login_required
 def listar_pacientes(request):
-    paciente_list = Paciente.objects.all()
+    paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
     paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
     page = request.GET.get('page')
     pacientes = paginator.get_page(page)
@@ -72,19 +73,21 @@ def paciente_crear(request):
             form.save()
             #messages.success(request, f'Paciente  creado!! ')
             data['form_is_valid'] = True
-            paciente_list = Paciente.objects.all()
+            paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
             paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
             page = request.GET.get('page')
             pacientes = paginator.get_page(page)
+            
             data['html_pacientes_lista'] = render_to_string('pacientes/pacientes_parcial_listar.html', {
-                'pacientes': pacientes
+                'pacientes': pacientes,
+                'message': {'message':'Paciente  creado!! ','tags':'success'}
             })
         else:
             data['form_is_valid'] = False
     else:
         form = PacienteCrearForm()
 
-    context = {'form': form}
+    context = {'form': form }
     data['html_form'] = render_to_string('pacientes/pacientes_crear.html',
         context,
         request=request,
@@ -101,12 +104,13 @@ def paciente_actualizar(request,pk):
             form.save()
             #messages.success(request, f'Paciente  creado!! ')
             data['form_is_valid'] = True
-            paciente_list = Paciente.objects.all()
+            paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
             paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
             page = request.GET.get('page')
             pacientes = paginator.get_page(page)
             data['html_pacientes_lista'] = render_to_string('pacientes/pacientes_parcial_listar.html', {
-                'pacientes': pacientes
+                'pacientes': pacientes,
+                'message': {'message': f'Paciente { paciente.nombres } { paciente.apellido_paterno } { paciente.apellido_materno } Editado!! ', 'tags': 'success'}
             })
         else:
             data['form_is_valid'] = False
@@ -122,13 +126,25 @@ def paciente_actualizar(request,pk):
     return JsonResponse(data)
 
 @login_required
+def paciente_buscar(request):
+    data = dict()
+    paciente = Paciente.objects.filter(Q(nombres__icontains=request.GET.get('name')) | Q(apellido_paterno__icontains=request.GET.get('name')))
+    paginator = Paginator(paciente, 5) # Show 25 contacts per page
+    page = request.GET.get('page')
+    pacientes = paginator.get_page(page)
+    data['html_pacientes_lista'] = render_to_string('pacientes/pacientes_parcial_listar.html', {
+        'pacientes': pacientes
+    })
+    return JsonResponse(data)
+
+@login_required
 def paciente_delete(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
     data = dict()
     if request.method == 'POST':
         paciente.delete()
         data['form_is_valid'] = True
-        paciente_list = Paciente.objects.all()
+        paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
         paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
         page = request.GET.get('page')
         pacientes = paginator.get_page(page)
