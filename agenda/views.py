@@ -94,7 +94,7 @@ def agenda_crear(request,pk):
             print(form.cleaned_data)
             form.save()
             data['form_is_valid'] = True
-            paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
+            paciente_list = Paciente.objects.all().order_by('apellido_paterno')
             paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
             page = request.GET.get('page')
             pacientes = paginator.get_page(page)

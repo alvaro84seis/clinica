@@ -3,12 +3,30 @@
 {% load static %}
 {% block content %}
     <div class="content">
-    <div class="form-group">
-        <input name="txt_buscar" id="txt_buscar" class="form-control" type="text" value="">
-        <input name="btn_buscar" data-url="{% url 'pacientes:pacientes-buscar' %}" id="btn_buscar" class="btn btn-primary" type="button" value="Buscar">
-    </div>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card card-sm">
+                    <div class="card-body row no-gutters align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-search h4 text-body"></i>
+                        </div>
+                        <!--end of col-->
+                        <div class="col">
+                            <input name="txt_buscar" id="txt_buscar" class="form-control form-control-lg form-control-borderless" type="search" placeholder="Nombre o RUT">
+                        </div>
+                        <!--end of col-->
+                        <div class="col-auto">
+                            <button data-url="{% url 'pacientes:pacientes-buscar' %}" name="btn_buscar" id="btn_buscar" class="btn btn-lg btn-info" >Buscar</button>
+                        </div>
+                        <!--end of col-->
+                    </div>
+                </div>
+            </div>
+            <!--end of col-->
+        </div>
+    </div>  
+        <img  style='cursor:pointer' onclick='crear_paciente()' class='js-crear-paciente' src="{% static '/agenda/add.png' %}" alt="AGREGAR" width='40' height='40'>
         
-        <button type="button" class="btn btn-primary js-crear-paciente" ><b>&plus;</b></button>
         <div id="contenido_tabla">
             {% include 'pacientes/pacientes_parcial_listar.html' %}
         </div>
@@ -40,7 +58,7 @@
         });
     });
 
-    $(".js-crear-paciente").click(function () {
+    crear_paciente = function () {
         $.ajax({
         url: 'new/',
         type: 'get',
@@ -52,7 +70,7 @@
             $("#modal-paciente .modal-content").html(data.html_form);
         }
         });
-    });
+    };
 
     crear_agenda = function (kk) {
         var btn=$(kk);

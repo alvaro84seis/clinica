@@ -9,6 +9,7 @@
     <script src="{% static 'agenda/locale/es.js' %}"></script>
 {% endblock cabecera_extra %}
 {% block content %}
+
     <div class="container">
         <div class="row">
             <div class="col"></div>
@@ -73,15 +74,18 @@
         $('#id_agenda_paciente').select2({
              width: 'resolve'
         });
+       
         $('#calendarioweb').fullCalendar({
             height: 700,
             
             themeSystem: 'bootstrap4',
             header:{
                 left:   'title',
-                center: 'month,agendaWeek,agendaDay',
+                center: 'month,agendaWeek,agendaDay, listWeek',
                 right:  'today prev,next'
             },
+            timeFormat: 'H:mm',
+            eventLimit:3,
             defaultTimedEventDuration:'01:00:00',
             businessHours: {
             // days of week. an array of zero-based day of week integers (0=Sunday)

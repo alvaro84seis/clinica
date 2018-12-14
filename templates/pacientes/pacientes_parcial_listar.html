@@ -24,14 +24,10 @@
                     <td>{{ paciente.email }}</td>
                     <td>{{ paciente.fecha_nacimiento }}</td>
                     <td>
-                        <img data-url="{% url 'pacientes:pacientes-actualizar' paciente.pk %}" style='cursor:pointer' onclick='actualizar(this)' class='js-editar-paciente' src="{% static '/agenda/001-resume.png' %}" alt="Editar" width='31' height='31'>
-                        <img data-url="{% url 'agenda:agenda-crear' paciente.pk %}" class='js-crear-agenda' onclick='crear_agenda(this)' style='cursor:pointer' src="{% static '/agenda/003-calendar.png' %}" alt="Editar" width='35' height='35'>
-                         <button type="button"
-                                class="btn btn-danger btn-sm js-delete-paciente"
-                                onclick='borrar_paciente(this)'
-                                data-url="{% url 'pacientes:pacientes-delete' paciente.id %}">
-                            <span class="glyphicon glyphicon-trash"></span> Delete
-                        </button>
+                        <img data-url="{% url 'pacientes:pacientes-actualizar' paciente.pk %}" style='cursor:pointer' onclick='actualizar(this)' class='js-editar-paciente' src="{% static '/agenda/creation.png' %}" alt="Editar" width='35' height='35'>
+                        <img data-url="{% url 'agenda:agenda-crear' paciente.pk %}" class='js-crear-agenda' onclick='crear_agenda(this)' style='cursor:pointer' src="{% static '/agenda/calendar_gradient.png' %}" alt="Editar" width='35' height='35'>
+                        <img data-url="{% url 'pacientes:pacientes-delete' paciente.id %}" class='js-delete-paciente' onclick='borrar_paciente(this)' style='cursor:pointer' src="{% static '/agenda/ui.png' %}" alt="ELIMINAR PACIENTE" width='35' height='35'>
+                        
                     </td>
                 </tr>
             {% empty %}

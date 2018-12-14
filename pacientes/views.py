@@ -57,7 +57,7 @@ class ListAndCreate(SuccessMessageMixin,LoginRequiredMixin,CreateView):
 
 @login_required
 def listar_pacientes(request):
-    paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
+    paciente_list = Paciente.objects.all().order_by('apellido_paterno')
     paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
     page = request.GET.get('page')
     pacientes = paginator.get_page(page)
@@ -73,7 +73,7 @@ def paciente_crear(request):
             form.save()
             #messages.success(request, f'Paciente  creado!! ')
             data['form_is_valid'] = True
-            paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
+            paciente_list = Paciente.objects.all().order_by('apellido_paterno')
             paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
             page = request.GET.get('page')
             pacientes = paginator.get_page(page)
@@ -104,7 +104,7 @@ def paciente_actualizar(request,pk):
             form.save()
             #messages.success(request, f'Paciente  creado!! ')
             data['form_is_valid'] = True
-            paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
+            paciente_list = Paciente.objects.all().order_by('apellido_paterno')
             paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
             page = request.GET.get('page')
             pacientes = paginator.get_page(page)
@@ -128,7 +128,22 @@ def paciente_actualizar(request,pk):
 @login_required
 def paciente_buscar(request):
     data = dict()
-    paciente = Paciente.objects.filter(Q(nombres__icontains=request.GET.get('name')) | Q(apellido_paterno__icontains=request.GET.get('name')))
+    porte = len(request.GET['name'].split(' '))
+    texto = request.GET['name'].split(' ',3)
+    if (porte==1):
+        apellido_paterno = texto[0]
+        
+        paciente = Paciente.objects.filter(Q(apellido_paterno__icontains=apellido_paterno) | Q(nombres__icontains=apellido_paterno) |  Q(rut__icontains=apellido_paterno)).order_by('apellido_paterno')
+    elif (porte)==2:
+        apellido_paterno = texto[0]
+        apellido_materno = texto[1]
+        paciente = Paciente.objects.filter(Q(apellido_paterno__icontains=apellido_paterno,apellido_materno__icontains=apellido_materno) | Q(nombres__icontains=apellido_paterno,apellido_paterno__icontains=apellido_materno)).order_by('apellido_paterno')
+    elif (porte)==3:
+        apellido_paterno = texto[0]
+        apellido_materno = texto[1]
+        nombres = texto[2]
+        paciente = Paciente.objects.filter(Q(apellido_paterno__icontains=apellido_paterno,apellido_materno__icontains=apellido_materno,nombres__icontains=nombres) | Q(nombres__icontains=apellido_paterno,apellido_paterno__icontains=apellido_materno,apellido_materno__icontains=nombres)).order_by('apellido_paterno') 
+    
     paginator = Paginator(paciente, 5) # Show 25 contacts per page
     page = request.GET.get('page')
     pacientes = paginator.get_page(page)
@@ -144,7 +159,7 @@ def paciente_delete(request, pk):
     if request.method == 'POST':
         paciente.delete()
         data['form_is_valid'] = True
-        paciente_list = Paciente.objects.all().order_by('-fecha_ingreso')
+        paciente_list = Paciente.objects.all().order_by('apellido_paterno')
         paginator = Paginator(paciente_list, 5) # Show 25 contacts per page
         page = request.GET.get('page')
         pacientes = paginator.get_page(page)
