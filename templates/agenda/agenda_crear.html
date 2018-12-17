@@ -8,7 +8,7 @@
         </button>
     </div>
     <div class="modal-body">
-    <form action="{% url 'agenda:agenda-crear' paciente.pk %}" id='agenda_crear_form' method='POST'>
+    <form action="{% url 'agenda:agenda-crear' paciente.pk %}" id='agenda_crear_form'  method='POST'>
            
         {% crispy form %}
     </form>

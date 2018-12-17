@@ -137,13 +137,25 @@ def paciente_buscar(request):
     elif (porte)==2:
         apellido_paterno = texto[0]
         apellido_materno = texto[1]
-        paciente = Paciente.objects.filter(Q(apellido_paterno__icontains=apellido_paterno,apellido_materno__icontains=apellido_materno) | Q(nombres__icontains=apellido_paterno,apellido_paterno__icontains=apellido_materno)).order_by('apellido_paterno')
+        nombres2=' '.join([texto[0],texto[1]])
+        paciente = Paciente.objects.filter(Q(nombres__icontains=nombres2) |
+                                            Q(apellido_paterno__icontains=apellido_paterno,apellido_materno__icontains=apellido_materno) | 
+                                            Q(nombres__icontains=apellido_paterno,apellido_paterno__icontains=apellido_materno)).order_by('apellido_paterno')
     elif (porte)==3:
         apellido_paterno = texto[0]
         apellido_materno = texto[1]
         nombres = texto[2]
-        paciente = Paciente.objects.filter(Q(apellido_paterno__icontains=apellido_paterno,apellido_materno__icontains=apellido_materno,nombres__icontains=nombres) | Q(nombres__icontains=apellido_paterno,apellido_paterno__icontains=apellido_materno,apellido_materno__icontains=nombres)).order_by('apellido_paterno') 
-    
+        nombres2=' '.join([texto[0],texto[1]])
+        apellido_paterno2 = texto[2]
+        paciente = Paciente.objects.filter(Q(apellido_paterno__icontains=apellido_paterno2,nombres__icontains=nombres2) |
+                                            Q(apellido_paterno__icontains=apellido_paterno,apellido_materno__icontains=apellido_materno,nombres__icontains=nombres) |
+                                            Q(nombres__icontains=apellido_paterno,apellido_paterno__icontains=apellido_materno,apellido_materno__icontains=nombres)).order_by('apellido_paterno') 
+    elif porte==4:
+        texto2 = request.GET['name'].split(' ')
+        nombres2=' '.join([texto[0],texto[1]])
+        apellido_paterno2 = texto[2]
+        apellido_materno2 = texto[3]
+        paciente = Paciente.objects.filter(Q(apellido_paterno__icontains=apellido_paterno2,apellido_materno__icontains=apellido_materno2,nombres__icontains=nombres2)).order_by('apellido_paterno') 
     paginator = Paginator(paciente, 5) # Show 25 contacts per page
     page = request.GET.get('page')
     pacientes = paginator.get_page(page)

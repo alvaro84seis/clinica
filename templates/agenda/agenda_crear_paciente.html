@@ -1,0 +1,33 @@
+ {% load crispy_forms_tags %}
+ <!-- Modal Header -->
+<div class="modal-header">
+    <h4 class="modal-title">Crear Agenda {{agenda_fecha}} <span id="fecha_span"></span> </h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<!-- Modal body -->
+<div class="modal-body">
+    <form action="{% url 'agenda:agenda-crear-paciente' %}" method='POST' id='id_form_crear_calendario'>
+        {% crispy form %}
+    </form>
+    
+</div>
+
+<!-- Modal footer -->
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+</div>
+<script>
+$( document ).ready(function(){
+    $('#id_agenda_fecha').val('{{agenda_fecha}}');
+    $('#id_agenda_paciente').prop('style','width:100%;');
+    $('.select2-selection--single').prop('style','height:38px');
+    $('#id_agenda_paciente').select2({
+        width: 'resolve'
+    });
+    $('#id_agenda_paciente').on('change',function(){
+        //console.log($('#id_agenda_paciente option:selected').text());
+        $("#id_nombre").val($('#id_agenda_paciente option:selected').text());
+    })
+});
+</script>

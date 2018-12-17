@@ -48,7 +48,7 @@ def agenda_crear_view(request, id):
 @login_required 
 def calendario_view(request):
     if request.method == 'POST' and 'btn_ingresar_agenda' in request.POST:
-        print("btn_ingresar_agenda")
+        #print("btn_ingresar_agenda")
         form = AgendaCrearFormCalendario(request.POST or None)
         if form.is_valid():
             estadoagenda = get_object_or_404(EstadoAgenda, id=1) 
@@ -59,15 +59,23 @@ def calendario_view(request):
     else:
         print("GET")
         form = AgendaCrearFormCalendario()
-        query = Agenda.objects.filter(agenda_fecha__gte=time.strftime("%Y-%m-%d"))
+        #query = Agenda.objects.filter( agenda_fecha__gte=time.strftime("%Y-%m-%d")).exclude(estado_agenda__id = 2)
+        query = Agenda.objects.exclude(estado_agenda__id = 2)
+        query = Agenda.objects.all()
         lista=[]
         for obj in query:
+            #print(obj.estado_agenda.id)
             if obj.agenda_tipo.agenda_tipo == 'normal':
+
                 color = "#FF0F0"
                 textcolor="white"
             else:
                 color = "yellow"
                 textcolor="black"
+            if obj.estado_agenda.id==2:
+        
+                color = "#F78181"
+                textcolor="#D8D8D8"
             lista.append(
                 {
                     "title": obj.nombre,
@@ -113,3 +121,45 @@ def agenda_crear(request,pk):
                  
             },request=request)
     return JsonResponse(data)
+
+@login_required
+def agenda_crear_paciente(request):
+    data= dict()
+    #print(paciente2)
+    if request.method=='POST':
+        form = AgendaCrearFormCalendario(request.POST or None)
+        if form.is_valid():
+            estadoagenda = get_object_or_404(EstadoAgenda, id=1) 
+            form.instance.estado_agenda=estadoagenda
+            #form.instance.agenda_paciente = paciente2
+            #print(form.cleaned_data)
+            form.save() 
+            return redirect('agenda:agenda-calendario')   
+    else:
+        print( request.GET['agenda_fecha']  )
+        form = AgendaCrearFormCalendario()
+        data['html_form']=render_to_string('agenda/agenda_crear_paciente.html', {
+                'form': form, 
+                'agenda_fecha': str(request.GET['agenda_fecha'])  
+            },request=request)
+        return JsonResponse(data)
+
+@login_required
+def agenda_editar(request,pk):
+    data= dict()
+    
+    agenda = get_object_or_404(Agenda,pk=pk)
+    
+    if request.method=='POST':
+        form = AgendaEditarFormCalendario(request.POST or None,instance=agenda)
+        if form.is_valid():
+            form.save() 
+            return redirect('agenda:agenda-calendario')   
+    else:
+        form = AgendaEditarFormCalendario(instance=agenda)
+        data['html_form']=render_to_string('agenda/agenda_editar.html', {
+                'form': form,'agenda':agenda  
+            },request=request)
+        return JsonResponse(data)
+
+   

@@ -6,13 +6,13 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
             <div class="card card-sm">
-                    <div class="card-body row no-gutters align-items-center">
+                    <div class="card-body row no-gutters align-items-center" >
                         <div class="col-auto">
                             <i class="fas fa-search h4 text-body"></i>
                         </div>
                         <!--end of col-->
                         <div class="col">
-                            <input name="txt_buscar" id="txt_buscar" class="form-control form-control-lg form-control-borderless" type="search" placeholder="Nombre o RUT">
+                            <input name="txt_buscar" id="txt_buscar" class="form-control form-control-lg form-control-borderless" type="search" style='border:1px solid #ced4da;' placeholder="Nombre o RUT">
                         </div>
                         <!--end of col-->
                         <div class="col-auto">
@@ -42,13 +42,9 @@
 {% block extrajs %}
 <script>
     $(function () {
-   
-
-
-    $("#btn_buscar").click(function () {
-
+    buscar_paciente = function(){
         $.ajax({
-        url: $(this).attr('data-url'),
+        url: $("#btn_buscar").attr('data-url'),
         type: 'get',
         dataType: 'json',
         data:{"name":$('#txt_buscar').val()},
@@ -56,7 +52,19 @@
             $("#contenido_tabla").html(data.html_pacientes_lista);
         }
         });
+    }
+   
+    $("#txt_buscar").keypress(function(e) {
+    if(e.which == 13) {
+        buscar_paciente();
+        }
     });
+
+    $("#btn_buscar").click(function () {  
+        console.log('entra al click');
+        buscar_paciente();
+    });
+
 
     crear_paciente = function () {
         $.ajax({

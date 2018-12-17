@@ -24,7 +24,7 @@
                     <td>{{ paciente.email }}</td>
                     <td>{{ paciente.fecha_nacimiento }}</td>
                     <td>
-                        <img data-url="{% url 'pacientes:pacientes-actualizar' paciente.pk %}" style='cursor:pointer' onclick='actualizar(this)' class='js-editar-paciente' src="{% static '/agenda/creation.png' %}" alt="Editar" width='35' height='35'>
+                        <img data-url="{% url 'pacientes:pacientes-actualizar' paciente.pk %}" style='cursor:pointer' onclick='actualizar(this)' class='js-editar-paciente mr-1' src="{% static '/agenda/creation.png' %}" alt="Editar" width='35' height='35'>
                         <img data-url="{% url 'agenda:agenda-crear' paciente.pk %}" class='js-crear-agenda' onclick='crear_agenda(this)' style='cursor:pointer' src="{% static '/agenda/calendar_gradient.png' %}" alt="Editar" width='35' height='35'>
                         <img data-url="{% url 'pacientes:pacientes-delete' paciente.id %}" class='js-delete-paciente' onclick='borrar_paciente(this)' style='cursor:pointer' src="{% static '/agenda/ui.png' %}" alt="ELIMINAR PACIENTE" width='35' height='35'>
                         

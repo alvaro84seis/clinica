@@ -60,14 +60,12 @@ class AgendaCrearFormCalendario(forms.ModelForm):
         super(AgendaCrearFormCalendario, self).__init__(*args, **kwargs)
  
         self.helper = FormHelper()
-        self.helper.form_id = 'id_crear_form'
-        self.helper.form_method = 'POST'
         self.helper.form_tag = True
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-3'
         self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
-            Div('nombre','agenda_hora','agenda_comentario','agenda_tipo','agenda_paciente',
+            Div('agenda_paciente','agenda_hora','agenda_tipo','nombre','agenda_comentario',
                 Field('agenda_fecha', type="hidden")
             ),
             Div(
@@ -83,21 +81,19 @@ class AgendaEditarFormCalendario(forms.ModelForm):
         model = Agenda
 
         #fields = ['rut','nombres','apellido_paterno','apellido_materno','sexo','fecha_nacimiento']
-        exclude = ['agenda_creacion','estado_agenda']
+        exclude = ['agenda_creacion']
         
         
     def __init__(self, *args, **kwargs):
         super(AgendaEditarFormCalendario, self).__init__(*args, **kwargs)
  
         self.helper = FormHelper()
-        self.helper.form_id = 'id_crear_form'
-        self.helper.form_method = 'POST'
         self.helper.form_tag = True
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-3'
         self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
-            Div('nombre','agenda_hora','agenda_comentario','agenda_tipo','agenda_paciente',
+            Div('nombre','agenda_hora','agenda_comentario','agenda_tipo','agenda_paciente','estado_agenda',
                 Field('agenda_fecha', type="hidden")
             ),
             Div(
